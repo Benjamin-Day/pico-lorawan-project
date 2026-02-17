@@ -1,6 +1,7 @@
 # Rpi Pico IoT LoRaWAN Gas Monitoring System
 
-**Authors:** Benjamin Day, Gurkirat Singh 
+**Authors:** Benjamin Day, Gurkirat Singh
+
 **Created:** 2022
 
 An IoT gas level monitoring system. Implemented using a Raspberry Pi Pico, MQ2 gas sensor, and SX1276 LoRaWAN transmitter to detect hazardous gases in industrial settings. The LoRaWAN gateway was a Laird Sentrius RG1xx. Sensor data is transmitted over LoRaWAN to the gateway and then to AWS IoT Core over the internet. Messaging is done via AWS IoT Core (MQTT). 
