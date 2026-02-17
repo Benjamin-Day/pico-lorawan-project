@@ -61,6 +61,31 @@ This project utilizes the [pico-lorawan](https://github.com/sandeepmistry/pico-l
         └── lorawan_downlink.py      #   Lambda for sending downlinks to device
 ```
 
+## How It Works
+
+1. The Pico reads the MQ2 gas sensor via ADC and converts the analog value to a voltage
+2. If the gas level exceeds 0.9V, the buzzer and alarm LED activate locally
+3. The gas reading is sent as a float over LoRaWAN (OTAA, US915 region)
+4. AWS IoT Core receives the uplink via the LoRaWAN gateway
+5. The Python client subscribes to `lorawan/uplink`, decodes the base64 payload, and plots it
+6. If the gas level exceeds 0.6V, an alert is published to `lorawan/alert`, which triggers an SNS email notification
+7. Downlink messages can be sent to toggle the Pico's onboard LED
+
+## Security
+
+- **AES-128** encryption between end device and server
+- **TLS** between LoRaWAN gateway and server
+- **OTAA** (Over-The-Air Activation) for dynamic session key generation
+- Restricted IAM policies and roles in AWS
+- AWS credentials stay in the cloud (Lambda handles downlink via AWS API)
+
+### Known Security Limitations 
+
+The following issues could not be addressed due to time and resource limitations:
+- No nonce to prevent join replay attacks (addressed in LoRaWAN 1.1)
+- Root keys stored in plaintext on device (production systems should use an HSM)
+- TLS used instead of IPSec between gateway and server
+
 ## Getting Started
 
 ### Prerequisites
@@ -118,31 +143,6 @@ This project utilizes the [pico-lorawan](https://github.com/sandeepmistry/pico-l
    The client will display a live graph of gas levels and publish alerts to `lorawan/alert` when levels exceed the threshold.
 
    **Keyboard controls:** `r` = LED on, `d` = LED off (sends downlink to device).
-
-## How It Works
-
-1. The Pico reads the MQ2 gas sensor via ADC and converts the analog value to a voltage
-2. If the gas level exceeds 0.9V, the buzzer and alarm LED activate locally
-3. The gas reading is sent as a float over LoRaWAN (OTAA, US915 region)
-4. AWS IoT Core receives the uplink via the LoRaWAN gateway
-5. The Python client subscribes to `lorawan/uplink`, decodes the base64 payload, and plots it
-6. If the gas level exceeds 0.6V, an alert is published to `lorawan/alert`, which triggers an SNS email notification
-7. Downlink messages can be sent to toggle the Pico's onboard LED
-
-## Security
-
-- **AES-128** encryption between end device and server
-- **TLS** between LoRaWAN gateway and server
-- **OTAA** (Over-The-Air Activation) for dynamic session key generation
-- Restricted IAM policies and roles in AWS
-- AWS credentials stay in the cloud (Lambda handles downlink via AWS API)
-
-### Known Security Limitations 
-
-The following issues could not be addressed due to time and resource limitations:
-- No nonce to prevent join replay attacks (addressed in LoRaWAN 1.1)
-- Root keys stored in plaintext on device (production systems should use an HSM)
-- TLS used instead of IPSec between gateway and server
 
 ## Acknowledgments
 
