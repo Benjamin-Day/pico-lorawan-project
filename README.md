@@ -1,4 +1,4 @@
-# IoT LoRaWAN Environment Monitoring System
+# Rpi Pico IoT LoRaWAN Gas Monitoring System
 
 **Authors:** Benjamin Day, Gurkirat Singh 
 **Created:** 2022
